@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDF to Word Converter</title>
+  <meta charset="utf-8" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
+    .upload-box { border: 2px dashed #ccc; padding: 30px; margin: 20px auto; width: 60%; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>✅ PDF to Word Converter</h1>
+  <p>Convert your PDF to editable Word documents instantly.</p>
+
+  <div class="upload-box" onclick="document.getElementById('pdfInput').click();">
+    <p>📄 Drop PDF here or click to browse</p>
+    <input type="file" id="pdfInput" accept=".pdf" style="display:none">
+  </div>
+
+  <button onclick="uploadPDF()">Convert to Word</button>
+  <p id="statusMsg"></p>
+  <a id="downloadLink" class="hidden" href="#" download>Download Word File</a>
+
+  <script src="script.js"></script>
+</body>
+</html>
