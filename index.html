@@ -2,78 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PDFToolsLover offers 100% free online tools to convert, compress, merge, split, and manage PDF files easily and securely. No signup required.">
-  <meta name="robots" content="index, follow">
-  <meta name="keywords" content="PDF to Word, Convert PDF, Free PDF Tools, OCR PDF to Word">
-  <title>PDF to Word Converter - High Quality | PDFToolsLover</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF to Word Converter | PDFToolsLover</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f4f8;
-      margin: 0;
-      padding: 0;
-    }
-    .layout {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .tool-column {
-      width: 100%;
-      max-width: 600px;
-      padding: 20px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    }
-    .container {
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 10px;
-    }
-    input[type="file"] {
-      margin: 10px 0;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #status {
-      margin-top: 15px;
-      color: #28a745;
-    }
+    body { font-family: Arial, sans-serif; background: #f8f9fa; text-align: center; padding: 40px; }
+    .box { background: white; padding: 30px; border-radius: 12px; max-width: 500px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+    input[type="file"] { margin: 15px 0; }
+    button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    #status { margin-top: 20px; }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <div class="tool-column">
-      <div class="container">
-        <h2>PDF to Word Converter</h2>
-        <form id="uploadForm" method="POST" action="/convert" enctype="multipart/form-data">
-          <input type="file" id="pdf_file" name="pdf_file" accept="application/pdf" required />
-          <br />
-          <button type="submit">Convert PDF</button>
-        </form>
-        <div id="status"></div>
-      </div>
-    </div>
+  <div class="box">
+    <h2>Convert PDF to Word</h2>
+    <form id="uploadForm" method="POST" enctype="multipart/form-data">
+      <input type="file" name="pdf_file" accept="application/pdf" required />
+      <br />
+      <button type="submit">Convert Now</button>
+    </form>
+    <div id="status"></div>
   </div>
 
   <script>
-    document.getElementById("uploadForm").addEventListener("submit", function (e) {
-      const uniqueId = Date.now().toString(36) + Math.random().toString(36).substr(2);
-      const form = e.target;
-      form.action = `./${uniqueId}/convert.py`;
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      document.getElementById("status").innerText = "Uploading and Converting...";
+
+      const response = await fetch('convert.py', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "converted.docx";
+        link.click();
+        document.getElementById("status").innerText = "Conversion successful!";
+      } else {
+        document.getElementById("status").innerText = "Conversion failed.";
+      }
     });
   </script>
 </body>
