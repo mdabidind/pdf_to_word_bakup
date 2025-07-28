@@ -1,1 +1,8 @@
-# pdf_to_word_bakup
+# PDF to Word Converter with OCR (GitHub Edition)
+
+## 🛠 Installation
+
+Clone this repo and run:
+
+```bash
+python start.py
