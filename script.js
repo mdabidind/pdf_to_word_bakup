@@ -2,13 +2,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ Website Loaded');
 
-  // Example: Handle form submission
   const form = document.getElementById('uploadForm');
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const fileInput = document.getElementById('pdfFile');
+      const statusMsg = document.getElementById('statusMsg');
+      const downloadLink = document.getElementById('downloadLink');
+
       if (!fileInput || !fileInput.files.length) {
         alert('Please select a PDF file to convert.');
         return;
@@ -17,9 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData();
       formData.append('pdf', fileInput.files[0]);
 
+      // Optional: Show uploading message
+      if (statusMsg) statusMsg.textContent = '⏳ Uploading and converting...';
+
       try {
-        // Send to backend for conversion
-        const response = await fetch('/convert', {
+        // CHANGE THIS URL to your backend endpoint (e.g., Replit or Python server)
+        const backendURL = 'https://your-python-backend-url/convert'; // <-- Update this
+
+        const response = await fetch(backendURL, {
           method: 'POST',
           body: formData,
         });
@@ -27,17 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await response.json();
 
         if (result.success) {
-          // Show download link
-          const downloadLink = document.getElementById('downloadLink');
-          downloadLink.href = `/converted/${result.file_id}.docx`;
+          if (statusMsg) statusMsg.textContent = '✅ Conversion successful!';
+          downloadLink.href = result.download_url; // result.download_url must be returned by Flask
           downloadLink.style.display = 'block';
         } else {
-          alert('❌ Conversion failed: ' + result.error);
+          if (statusMsg) statusMsg.textContent = '❌ Conversion failed: ' + result.error;
+          downloadLink.style.display = 'none';
         }
-
       } catch (err) {
         console.error(err);
-        alert('⚠️ An error occurred during conversion.');
+        if (statusMsg) statusMsg.textContent = '⚠️ Server error. Conversion failed.';
+        downloadLink.style.display = 'none';
       }
     });
   }
