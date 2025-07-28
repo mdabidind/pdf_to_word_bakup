@@ -1,28 +1,72 @@
+<?php include 'includes/navbar.php'; ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>PDF to Word Converter</title>
-  <meta charset="utf-8" />
-  <style>
-    body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
-    .upload-box { border: 2px dashed #ccc; padding: 30px; margin: 20px auto; width: 60%; }
-    .hidden { display: none; }
-  </style>
+  <meta charset="UTF-8">
+  <title>PDF to Word Converter - PDFToolsLover</title>
+  <meta name="description" content="PDFToolsLover offers 100% free online tools to convert PDF to Word with high accuracy, OCR, and layout preservation. No signup required.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9530934065893781" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="static/styles.css">
 </head>
-<body>
-  <h1>✅ PDF to Word Converter</h1>
-  <p>Convert your PDF to editable Word documents instantly.</p>
 
-  <div class="upload-box" onclick="document.getElementById('pdfInput').click();">
-    <p>📄 Drop PDF here or click to browse</p>
-    <input type="file" id="pdfInput" accept=".pdf" style="display:none">
+<body>
+  <div class="layout">
+    <!-- Left Google Ad (Desktop Only) -->
+    <div class="ad left-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9530934065893781" data-ad-slot="left" data-ad-format="auto"></ins>
+    </div>
+
+    <!-- Center Tool Area -->
+    <div class="tool-box">
+      <h1>PDF to Word Converter</h1>
+      <p>Drop a PDF below and get a high-quality Word file back – layout preserved like a Xerox copy!</p>
+      
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="pdf" accept="application/pdf" required>
+        <button type="submit">Convert</button>
+      </form>
+      
+      <div id="status"></div>
+    </div>
+
+    <!-- Right Google Ad (Desktop Only) -->
+    <div class="ad right-ad">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9530934065893781" data-ad-slot="right" data-ad-format="auto"></ins>
+    </div>
   </div>
 
-  <button onclick="uploadPDF()">Convert to Word</button>
-  <p id="statusMsg"></p>
-  <a id="downloadLink" class="hidden" href="#" download>Download Word File</a>
+  <script>
+    const form = document.getElementById("uploadForm");
+    const status = document.getElementById("status");
 
-  <script src="script.js"></script>
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const file = form.pdf.files[0];
+      const id = Math.random().toString(36).substring(2, 15);
+      const formData = new FormData();
+      formData.append("pdf", file);
+      formData.append("id", id);
+
+      status.innerText = "Uploading and converting...";
+
+      const response = await fetch(
+        "https://colab.research.google.com/drive/<your-colab-id>?usp=sharing", 
+        {
+          method: "POST",
+          body: formData
+        });
+
+      if (response.ok) {
+        status.innerHTML = `✅ <a href="outputs/${id}.docx" download>Download Word File</a>`;
+      } else {
+        status.innerText = "❌ Conversion failed.";
+      }
+    };
+  </script>
+
+<?php include 'includes/footer.php'; ?>
 </body>
 </html>
