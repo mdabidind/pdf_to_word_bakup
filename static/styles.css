@@ -1,0 +1,38 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f7fc;
+}
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.tool-box {
+  width: 60%;
+  margin: auto;
+  background: white;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
+}
+
+.ad {
+  width: 20%;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  .ad {
+    display: none;
+  }
+  .tool-box {
+    width: 100%;
+    margin: 1rem auto;
+  }
+}
