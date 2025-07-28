@@ -1,36 +1,37 @@
-#!/usr/bin/env python3
-
 from flask import Flask, request, send_file
 import os
-import tempfile
 import uuid
+from werkzeug.utils import secure_filename
 from pdf2image import convert_from_path
 import pytesseract
 from docx import Document
 
 app = Flask(__name__)
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/convert.py', methods=['POST'])
+@app.route('/convert', methods=['POST'])
 def convert_pdf():
     if 'pdf_file' not in request.files:
         return "No file uploaded", 400
 
-    pdf_file = request.files['pdf_file']
-    temp_dir = tempfile.mkdtemp()
-    pdf_path = os.path.join(temp_dir, "input.pdf")
-    output_path = os.path.join(temp_dir, "output.docx")
-    pdf_file.save(pdf_path)
+    pdf = request.files['pdf_file']
+    filename = secure_filename(pdf.filename)
+    file_id = str(uuid.uuid4())
+    pdf_path = os.path.join(UPLOAD_FOLDER, f"{file_id}.pdf")
+    pdf.save(pdf_path)
 
-    # Convert PDF to images
-    images = convert_from_path(pdf_path, dpi=300)
-    document = Document()
+    images = convert_from_path(pdf_path)
+    doc = Document()
 
-    for i, img in enumerate(images):
+    for img in images:
         text = pytesseract.image_to_string(img)
-        document.add_paragraph(text)
+        doc.add_paragraph(text)
 
-    document.save(output_path)
-    return send_file(output_path, as_attachment=True, download_name="converted.docx")
+    doc_path = os.path.join(UPLOAD_FOLDER, f"{file_id}.docx")
+    doc.save(doc_path)
+
+    return send_file(doc_path, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=8080)
