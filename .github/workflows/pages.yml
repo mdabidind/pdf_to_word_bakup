@@ -1,34 +1,38 @@
-# .github/workflows/pages.yml
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # or 'master' if that's your branch
+      - main  # Change to "master" if your main branch is named that
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup Pages
+      - name: Set up GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./  # This is where your HTML files live (root folder)
+          path: ./  # Make sure your index.html is in the root or update this path
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
 
     environment:
       name: github-pages
