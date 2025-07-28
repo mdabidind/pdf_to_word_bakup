@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Convert PDF to Word with accurate formatting using OCR. No quality loss!">
+  <title>PDF to Word Converter</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #downloadLink {
+      display: none;
+      margin-top: 20px;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF to Word Converter</h1>
+    <form id="uploadForm">
+      <input type="file" id="pdfFile" name="pdf" accept=".pdf" required />
+      <br />
+      <button type="submit">Convert PDF to Word</button>
+    </form>
+    <div class="status" id="statusMessage">Uploading and converting...</div>
+    <a id="downloadLink" href="#" download>⬇️ Download Converted Word File</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('✅ Website Loaded');
+
+      const form = document.getElementById('uploadForm');
+      const statusMessage = document.getElementById('statusMessage');
+      const downloadLink = document.getElementById('downloadLink');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const fileInput = document.getElementById('pdfFile');
+        if (!fileInput || !fileInput.files.length) {
+          alert('Please select a PDF file to convert.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('pdf', fileInput.files[0]);
+
+        statusMessage.textContent = '⏳ Uploading and converting...';
+        downloadLink.style.display = 'none';
+
+        try {
+          const response = await fetch('/convert', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            downloadLink.href = `/converted/${result.file_id}.docx`;
+            downloadLink.style.display = 'block';
+            statusMessage.textContent = '✅ Conversion completed!';
+          } else {
+            statusMessage.textContent = '❌ Conversion failed: ' + result.error;
+          }
+        } catch (err) {
+          console.error(err);
+          statusMessage.textContent = '⚠️ Error occurred during conversion.';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
